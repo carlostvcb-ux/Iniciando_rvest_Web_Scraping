@@ -1,0 +1,39 @@
+---
+title: "Web_Scraping"
+author: 'Aluno: Carlos Alberto Alves de meneses,20180003202'
+date: "2023-02-24"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Executando a raspagem da web passo a passo, usando o pacote rvest R escrito por Hadley Wicham.
+
+```{r}
+#Baixando e carregando o pacote
+install.packages("rvest")
+#install.packages("selectrxml2")
+install.packages("xml2")
+library(rvest)
+library(xml2)
+#library(selectrxml2)
+```
+
+O pacote rvest define o link da página da web como o primeiro passo. Depois disso, rótulos apropriados devem ser definidos. A linguagem HTML edita o conteúdo usando várias tags e seletores. Esses seletores devem ser identificados e marcados para armazenamento de seu cinteúdo junto à embalagem da colheita. Em seguida, todos os dados gravados podem ser transformados em um conjunto de dados apropriado e a análise pode ser realizada.
+
+Coletaremos um conjunto de dados de um blog sobre big data (www.devveri.com). Este site fornece informações úteis sobre big data, domínios de ciência de dados.
+
+Vamos comerçar a coletar informações para descobrir quantos artigos existem em cada categoria.
+
+**Para nosso projeto, queremos coletar informaçòes para descobrir as noticias sobre o nosso estado e cidade que estão sendo vinculadas nos principais portais de noticias, blog`s e redes sociais,**
+
+* Para coletar as informações sobre quantos artigos temos para cada categoria, usaremos a URL da página de destino do site.
+
+```{r}
+#Armazenando a URL na vari/avel:
+
+urls <- "http://devveri.com"
+urls
+```
