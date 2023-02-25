@@ -2,7 +2,7 @@
 title: "Web_Scraping"
 author: 'Aluno: Carlos Alberto Alves de meneses,20180003202'
 date: "2023-02-24"
-output: word_document
+output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
@@ -13,12 +13,11 @@ Executando a raspagem da web passo a passo, usando o pacote rvest R escrito por 
 
 ```{r}
 #Baixando e carregando o pacote
-install.packages("rvest")
-#install.packages("selectrxml2")
-install.packages("xml2")
+
+#install.packages("rvest")
+#install.packages("xml2")
 library(rvest)
 library(xml2)
-#library(selectrxml2)
 ```
 
 O pacote rvest define o link da página da web como o primeiro passo. Depois disso, rótulos apropriados devem ser definidos. A linguagem HTML edita o conteúdo usando várias tags e seletores. Esses seletores devem ser identificados e marcados para armazenamento de seu cinteúdo junto à embalagem da colheita. Em seguida, todos os dados gravados podem ser transformados em um conjunto de dados apropriado e a análise pode ser realizada.
@@ -143,14 +142,16 @@ Vamos começar reproduzindo os dados sobre as categorias e as contagens de artig
 
 Devemos implementar métodos básicos de manipulação de texto para ter contagens em um formato mais adequado. Como as contagens são mostradas aqui, temos que aplicar o texto básico para nos livrarmos dos caracteres:
 
-````{r}
-count [,1] 
+```{r}
+count[]
 ```
+
+
 
 Devemos substituir "\n", "("e ")"por "". Para este problema, vamos usar a função str_replace_all. Para usar a função str_replace_all, precisamos instalar o  pacote stringr e carregá-lo:
 
 ```{r}
-install.packages("stringr")
+#install.packages("stringr")
 library(stringr)
 
 count <- str_replace_all(count,"\\(","")
@@ -178,7 +179,7 @@ Você pode instalá-lo usando o comando install.packages("plotly").
 Então, é claro, temos que chamar essa biblioteca usando o comando library(plotly):
 
 ```{r}
-install.packages("plotly")
+#install.packages("plotly")
 library(plotly)
 ```
 
@@ -217,7 +218,7 @@ Agora que temos contagens médias diárias de comentários, vamos criar um gráf
 O gráfico de linhas a seguir mostra a contagem média de comentários com base nas datas: 
 
 ```{r}
-plot(avg_comment_counts,type = "l")
+#plot(avg_comment_counts,type = "l")
 ```
 
 Agora, vamos investigar mais sobre o conjunto de dados. Ver as estatísticas resumidas das contagens de comentários seria muito bom.
