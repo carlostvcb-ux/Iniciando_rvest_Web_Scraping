@@ -31,9 +31,218 @@ Vamos comerçar a coletar informações para descobrir quantos artigos existem e
 
 * Para coletar as informações sobre quantos artigos temos para cada categoria, usaremos a URL da página de destino do site.
 
-```{r}
-#Armazenando a URL na vari/avel:
 
-urls <- "http://devveri.com"
-urls
+
+**Escrevendo seu primeiro script de raspagem**
+
+Obs: já criamos regras *XPath* e *URLs* nos quais estamos interessados.
+
+* Agora precisamos criar variáveis NULL, porque vamos salvar a contagem de artigos para cada categoria e o nome das categorias.
+* Para isso, estamos criando variáveis de categoria e contagem:
+
+```{r}
+#criando variáveis NULL 
+     category <- NULL 
+     count <- NULL
 ```
+
+* Agora é hora de criar uma variável que inclua a URL na qual gostaríamos de navegar e coletar dados.
+
+* Como mencionamos, gostaríamos de coletar dados da primeira página do site. Ao usar o seguinte bloco de código, estamos atribuindo um URL à variável URLs:
+
+```{r}
+#Link para:
+urls_de_pagina<- "http://devveri.com"
+```
+
+Agora, a parte mais empolgante: coleta de dados! 
+
+O script a seguir é, antes de tudo, visitar o URL da página da Web, coletando nós HTML usando a função *read_html*. Para analisar nós HTML, estamos usando regras XPath que já criamos na seção anterior. Para este problema, estamos usando a função html_nodes e definindo nossas regras XPath , que já temos,  dentro da função:
+
+```{r}
+library(rvest)
+
+#criando variáveis NULL
+category<- NULL
+count <- NULL
+
+#links para a página
+urls <- "http://devveri.com/"
+
+#lendo url principal
+h <- read_html(urls)
+
+#obtendo categorias 
+c<- html_nodes(h, xpath = '/html/body/div[3]/div/div[2]/div[1]/ul/li/a/text()') 
+
+#obtendo contagens 
+cc<- html_nodes(h, xpath = '/html/body/div[3]/div/div[2]/div[1]/ul/li/text()') 
+
+#salvando o rsultado, convertendo XMLs para caracteres
+category <- as.matrix(as.character(c))
+count <- as.matrix(as.character(cc))
+
+```
+
+
+* Podemos usar a função data.frame para ver categorias e contagens juntas.
+* Você obterá o seguinte resultado em R, ao executar o script na primeira linha, conforme mostrado no seguinte bloco de código:
+
+```{r}
+data.frame(category,count)
+
+```
+
+* Agora é hora de coletar o nome, a contagem de comentários e a data dos artigos que escrevemos recentemente. 
+
+* Agora precisamos criar a variável NULL. Como vamos salvar a contagem de comentários, a data e o nome dos artigos, estamos criando as variáveis name, date e comment_count:
+
+O script a seguir é, antes de tudo, visitar o URL da página da Web, coletando nós HTML usando a função 
+read_html. Para analisar nós HTML, estamos usando regras XPath que já criamos na seção anterior. Para este problema, estamos usando a função html_nodes  e definindo nossas regras XPath,  que já temos,  dentro da função:
+
+```{r}
+#criando as variáveis NULL
+name <- NULL
+date <- NULL
+comment_count <- NULL
+
+#links para a página
+urls <- "http://devveri.com/"
+
+#lendo url principal
+h <- read_html(urls)
+
+#obtendo nomes
+n<- html_nodes(h, xpath = '/html/body/div[3]/div/div[1]/div/h2/a/text()')
+
+#obtendo as datas
+d<- html_nodes(h, xpath = '/html/body/div[3]/div/div[1]/div/p[1]/span[1]/text()')
+#obtendo a contagem de comentários
+comc<- html_nodes(h, xpath = '/html/body/div[3]/div/div[1]/div/p[1]/span[4]/a/text()')
+
+#salvando os resultados
+name<- as.matrix(as.character(n))
+date<- as.matrix(as.character(d))
+comment_count<- as.matrix(as.character(comc))
+
+```
+
+Conseguimos coletar o nome, a contagem de comentários e a data dos artigos:
+
+* Podemos usar a  função data.frame para ver as variáveis, nome, data e contagem de comentários juntas: 
+
+```{r}
+data.frame(name,date,comment_count)
+```
+
+**Brincando com os dados**
+
+Temos dois conjuntos de dados diferentes. Já coletamos categorias e contagens de artigos para cada categoria, e já coletamos o nome, data e contagens de comentários dos artigos, que foram escritos recentemente.
+
+Vamos começar reproduzindo os dados sobre as categorias e as contagens de artigos para cada categoria:
+
+Devemos implementar métodos básicos de manipulação de texto para ter contagens em um formato mais adequado. Como as contagens são mostradas aqui, temos que aplicar o texto básico para nos livrarmos dos caracteres:
+
+````{r}
+count [,1] 
+```
+
+Devemos substituir "\n", "("e ")"por "". Para este problema, vamos usar a função str_replace_all. Para usar a função str_replace_all, precisamos instalar o  pacote stringr e carregá-lo:
+
+```{r}
+install.packages("stringr")
+library(stringr)
+
+count <- str_replace_all(count,"\\(","")
+count <- str_replace_all(count,"\\)","")
+count <- str_replace_all(count,"\n","")
+```
+
+* Agora temos contagens de artigos em um formato melhor. Se criarmos o quadro de dados usando a nova versão da variável de contagem e categorias de artigos, teremos o seguinte resultado:
+
+```{r}
+data.frame(category,count)
+```
+
+Vamos atribuir esse quadro de dados à variável e converter a contagem como numérica, porque eles estão no formato de string. Se executarmos o código a seguir, criaremos um novo quadro de dados e converteremos as contagens como numéricas:
+
+```{r}
+categories <- data.frame(category,count)
+categories$count <- as.numeric(categories$count)
+```
+
+Agora estamos prontos para criar alguns gráficos:
+
+Para fazer isso, podemos usar a biblioteca de plotagem interativa do R, plotly, caso você ainda não a tenha instalada em seu ambiente R.
+Você pode instalá-lo usando o comando install.packages("plotly").
+Então, é claro, temos que chamar essa biblioteca usando o comando library(plotly):
+
+```{r}
+install.packages("plotly")
+library(plotly)
+```
+
+O seguinte comando nos ajudará a criar um gráfico de barras para mostrar a contagem de artigos para cada categoria: 
+
+```{r}
+plot_ly(categories, x = ~category, y = ~count, type = 'bar')
+```
+
+Podemos criar alguns gráficos usando nosso segundo conjunto de dados que é sobre a data, nome e contagens de comentários de artigos que foram escritos recentemente.
+Como você se lembra, já coletamos os seguintes dados para esse fim: 
+
+```{r}
+data.frame(name,date,comment_count)
+```
+
+Estamos prontos para criar nosso quadro de dados final. Mas, não se esqueça, a contagem de comentários ainda está no formato de string:
+
+Temos que convertê-los para o formato numérico. Para isso, podemos usar a função as.numeric:
+
+```{r}
+comments <- data.frame(name,date,comment_count)
+comments$comment_count <- as.numeric(comments$comment_count)
+```
+
+Agora estamos prontos para ir! Calcule a contagem de comentários por data:
+
+Para fazer isso, podemos usar aggregatea função:
+
+```{r}
+avg_comment_counts <- aggregate(comment_count~date, data = comments, FUN= "mean")
+```
+
+Agora que temos contagens médias diárias de comentários, vamos criar um gráfico de linhas para ver as alterações nas avaliações médias diárias:
+
+O gráfico de linhas a seguir mostra a contagem média de comentários com base nas datas: 
+
+```{r}
+plot(avg_comment_counts,type = "l")
+```
+
+Agora, vamos investigar mais sobre o conjunto de dados. Ver as estatísticas resumidas das contagens de comentários seria muito bom.
+Nesta parte, vamos calcular o valor mínimo, máximo, médio e mediano das contagens de comentários e, em seguida, criar um gráfico de barras que mostre essas estatísticas resumidas.
+Usando os seguintes comandos, vamos calcular essas estatísticas resumidas:
+
+```{r}
+min_comment_count <- min(comments$comment_count)
+max_comment_count <- max(comments$comment_count)
+avg_comment_count <- mean(comments$comment_count)
+median_comment_count <- median(comments$comment_count)
+```
+
+Vamos criar um dataframe que contenha as métricas calculadas:
+
+```{r}
+summary <- data.frame(min_comment_count, max_comment_count, avg_comment_count, median_comment_count)
+```
+Agora que temos estatísticas resumidas, podemos criar um gráfico de barras usando esses valores usando os seguintes comandos. Como em nosso plot haverá mais de uma categoria diferente, vamos utilizar a  add_tracefunção:
+
+```{r}
+plot_ly(x = "min", y = summary$min_comment_count, type = 'bar',name='min') %>%
+ add_trace(x = "max", y = summary$max_comment_count, type = 'bar',name='max')%>%
+ add_trace(x = "avg", y = summary$avg_comment_count, type = 'bar',name='average')%>%
+ add_trace(x = "median", y = summary$median_comment_count, type = 'bar',name='median')
+```
+
+Como você pode ver, este gráfico de barras é um resumo das estatísticas da média diária das avaliações: 
